@@ -1,0 +1,44 @@
+mainmenu "example"
+
+config BUILD_DEBUG
+    bool "Build with -DDEBUG"
+    default n
+
+menuconfig OPTIMIZE
+    bool "Enable optimization compile flags"
+    default y
+
+choice 
+    prompt "Optimization"
+    depends on OPTIMIZE
+    config OPTIMIZE_SMALL
+        bool "-Os"
+    config OPTIMIZE_DEBUG
+        bool "-Og -g3"
+endchoice
+
+
+menu "NATS host"
+    config NATS_HOST
+        string "NATS hosts"
+        default "127.0.0.1"
+
+    config NATS_PORT
+        string "NATS port"
+        default "3033"
+endmenu
+
+
+menu "Limits"
+    config NUM_IP_SESSIONS
+        int "Max simultaneous IP sessions"
+        default 8
+
+    config NUM_TIMERS
+        int "Max simultaneous timers"
+        default 1024
+
+    config BUF_LEN
+        int "buffer size"
+        default 4096
+endmenu
