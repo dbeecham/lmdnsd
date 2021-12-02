@@ -14,7 +14,7 @@
       name = "lmdnsd";
       src = ./.;
 
-      buildDepsDeps = [
+      depsBuildBuild = [
         nixpkgs.legacyPackages.x86_64-linux.ragel
       ];
 

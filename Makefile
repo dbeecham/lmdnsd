@@ -49,15 +49,16 @@
 #   compatibility with future library versions, so for long-term use across multiple OSs, this
 #   can have unforseen consequences
 # -O0 may improve debugging experience, but disables any hardening that depend on optimizations.
-CFLAGS         = -Iinclude -g3 -O0 -Iinc -Isrc -Wall -Wextra \
+CFLAGS         = -Iinclude -g3 -Og -Iinc -Isrc -Wall -Wextra \
                  -Wno-implicit-fallthrough -Wno-unused-const-variable \
                  -std=c11 -D_FORTIFY_SOURCE=2 -fexceptions \
                  -fasynchronous-unwind-tables -fpie -Wl,-pie \
                  -fstack-protector-strong -grecord-gcc-switches \
                  -Werror=format-security \
                  -Werror=implicit-function-declaration -Wl,-z,defs -Wl,-z,now \
+				 -Wno-unused-parameter -Wno-unused-variable \
                  -Wl,-z,relro $(cflags-y) $(EXTRA_CFLAGS)
-LDFLAGS        = -g3 -O0 $(ldflags-y) $(EXTRA_LDFLAGS)
+LDFLAGS        = -g3 -Og $(ldflags-y) $(EXTRA_LDFLAGS)
 LDLIBS         = $(ldlibs-y) $(EXTRA_LDLIBS)
 DESTDIR        = /
 PREFIX         = /usr/local
@@ -122,7 +123,7 @@ default: all
 
 all: lmdnsd
 
-lmdnsd: lmdnsd.o
+lmdnsd: lmdnsd.o lmdnsd_mdns_parser.o
 
 
 
@@ -152,6 +153,13 @@ compile_commands.json:
 .PHONY: tags
 tags: | cscope.files
 	$(CTAGS) -L cscope.files
+
+.PHONY: cscope.files
+cscope.files: lmdnsd.c.deps lmdnsd_mdns_parser.c.deps this.deps
+	$(Q)cat $^ | sort | uniq > $@
+
+this.deps: lmdnsd.c lmdnsd.h lmdnsd_mdns_parser.h lmdnsd_mdns_parser.c lmdnsd_packet.h
+	$(Q)echo "$^" | sed -e 's/ /\n/g' > $@
 
 .PHONY: scan-build
 scan-build:
@@ -271,8 +279,7 @@ vpath %.c.md src/
 vpath %.c.rl src/
 vpath %.c.rl.md src/
 vpath %.c.rl.rst src/
-vpath %.h include/
-vpath %.h inc/
+vpath %.h src/
 vpath munit.c vendor/munit/
 vpath test_%.c tests/
 
