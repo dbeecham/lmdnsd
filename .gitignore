@@ -1,0 +1,4 @@
+*.swp
+*.o
+lmdnsd_mdns_parser.c
+.ccls-cache

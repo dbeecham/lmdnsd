@@ -733,7 +733,7 @@ int lmdnsd_epoll_event_netlink_newaddr_ipv4 (
         syslog(LOG_ERR, "%s:%d:%s: if_indextoname: %s", __FILE__, __LINE__, __func__, strerror(errno));
         return -1;
     }
-    if (NULL == inet_ntop(AF_INET6, in_addr, addr, INET_ADDRSTRLEN)) {
+    if (NULL == inet_ntop(AF_INET, in_addr, addr, INET_ADDRSTRLEN)) {
         syslog(LOG_ERR, "%s:%d:%s: inet_ntop: %s", __FILE__, __LINE__, __func__, strerror(errno));
         return -1;
     }
